@@ -1,15 +1,22 @@
 //var socket = new WebSocket("ws://localhost:8000");
-var socket = io.connect('http://localhost:8080');
-socket.on('connected', function(){
-  console.log("Socket Connected");
-});
-socket.on('disconnect', function(){
-  console.log("Socket Disconnected");
-});
-socket.on('data', function (data) {
-  console.log(data);
-  //angle = data;
-});
+// var socket = io.connect('http://localhost:8080');
+// socket.on('connected', function(){
+//   console.log("Socket Connected");
+// });
+// socket.on('disconnect', function(){
+//   console.log("Socket Disconnected");
+// });
+// socket.on('data', function (data) {
+//   console.log(data);
+//   //angle = data;
+// });
+
+var socket = io('http://localhost');
+
+ socket.on('news', function (data) {
+   console.log(data);
+   socket.emit('my other event', { my: 'data' });
+ });
 
 
 // function setup(){

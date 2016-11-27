@@ -12,16 +12,23 @@ var player_2 = 100;
 var io = require('socket.io').listen(8000);
 //var io = require('socket.io').listen(server);
 
-io.sockets.on('connection', function (socket) {
-    // If socket.io receives message from the client browser then
-    // this call back will be executed.
-    socket.on('message', function (msg) {
-        console.log(msg);
-    });
-    // If a web browser disconnects from Socket.IO then this callback is called.
-    socket.on('disconnect', function () {
-        console.log('disconnected');
-    });
+// io.sockets.on('connection', function (socket) {
+//     // If socket.io receives message from the client browser then
+//     // this call back will be executed.
+//     socket.on('message', function (msg) {
+//         console.log(msg);
+//     });
+//     // If a web browser disconnects from Socket.IO then this callback is called.
+//     socket.on('disconnect', function () {
+//         console.log('disconnected');
+//     });
+// });
+
+io.on('connection', function (socket) {
+  socket.emit('news', { hello: 'world' });
+  socket.on('my other event', function (data) {
+    console.log(data);
+  });
 });
 
 
@@ -49,7 +56,8 @@ port.on('error', function(err) {
 port.on('data', function (data) {
   console.log('Data: ' + data);
   var array = data.split(',');
-  io.sockets.emit('message', array);
+  //io.sockets.emit('message', array);
+  
 });
 
 
