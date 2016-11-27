@@ -36,3 +36,7 @@ port.on('open', function() {
 port.on('error', function(err) {
   console.log('Error: ', err.message);
 })
+
+port.on('data', function (data) {
+  console.log('Data: ' + data);
+});
