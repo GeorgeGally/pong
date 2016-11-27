@@ -1,15 +1,15 @@
 //var socket = new WebSocket("ws://localhost:8000");
 var socket = io.connect('http://localhost:8080');
-// socket.on('connected', function(){
-//   console.log("Socket Connected");
-// });
-// socket.on('disconnect', function(){
-//   console.log("Socket Disconnected");
-// });
-// socket.on('data', function (data) {
-//   console.log(data);
-//   angle = data;
-// });
+socket.on('connected', function(){
+  console.log("Socket Connected");
+});
+socket.on('disconnect', function(){
+  console.log("Socket Disconnected");
+});
+socket.on('data', function (data) {
+  console.log(data);
+  //angle = data;
+});
 
 
 // function setup(){
