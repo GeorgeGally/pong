@@ -5,11 +5,40 @@ connect().use(serveStatic(__dirname)).listen(8080, function(){
     console.log('Server running on 8080...');
 });
 
-var player_1 = 100;
-var player_2 = 100;
+var io = require('socket.io').listen(8000)
 
-//var io = require('socket.io')(8080);
-var io = require('socket.io').listen(8000);
+var SerialPort = require('serialport');
+///dev/cu.usbmodem1411
+// var port = new SerialPort('COM3', {
+var port = new SerialPort('/dev/cu.usbmodem1411', {
+  // autoOpen: false
+});
+
+
+port.on('open', function(){
+  // Now server is connected to Arduino
+  console.log('Serial Port Opend');
+
+  var lastValue;
+  io.sockets.on('connection', function (socket) {
+      //Connecting to client
+      console.log('Socket connected');
+      socket.emit('connected');
+      var lastValue;
+
+      port.on('data', function(data){
+          var angle = data[0];
+          if(lastValue !== angle){
+              socket.emit('data', angle);
+          }
+          lastValue = angle;
+      });
+  });
+});
+
+
+// //var io = require('socket.io')(8080);
+// var io = require('socket.io');
 //var io = require('socket.io').listen(server);
 
 // io.sockets.on('connection', function (socket) {
@@ -24,19 +53,49 @@ var io = require('socket.io').listen(8000);
 //     });
 // });
 
-io.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
-});
+// io.on('connection', function (socket) {
+//   socket.emit('news', { hello: 'world' });
+//   socket.on('my other event', function (data) {
+//     console.log(data);
+//   });
+// });
 
 
-var SerialPort = require('serialport');
+/////////////////
+//
+//
+// var app = require('http').createServer(handler)
+// var io = require('socket.io')(app);
+// var fs = require('fs');
+//
+// app.listen(80);
+//
+// function handler (req, res) {
+//   fs.readFile(__dirname + '/index.html',
+//   function (err, data) {
+//     if (err) {
+//       res.writeHead(500);
+//       return res.end('Error loading index.html');
+//     }
+//
+//     res.writeHead(200);
+//     res.end(data);
+//   });
+// }
+//
+// io.on('connection', function (socket) {
+//   socket.emit('news', { hello: 'world' });
+//   socket.on('my other event', function (data) {
+//     console.log(data);
+//   });
+// });
 
-var port = new SerialPort('COM3', {
-  // autoOpen: false
-});
+
+//////////////////////////
+
+
+
+
 
 
 port.on('open', function() {
@@ -46,6 +105,7 @@ port.on('open', function() {
   //   }
   //   console.log('message written');
   // });
+  console.log('port open');
 });
 
 //open errors will be emitted as an error event
@@ -54,10 +114,10 @@ port.on('error', function(err) {
 })
 
 port.on('data', function (data) {
-  console.log('Data: ' + data);
-  var array = data.split(',');
-  //io.sockets.emit('message', array);
-  
+  console.log(data);
+  //var array = data.split(',');
+  io.sockets.emit('message', data);
+
 });
 
 

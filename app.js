@@ -1,3 +1,45 @@
+//var socket = new WebSocket("ws://localhost:8000");
+// var socket = io.connect('http://localhost:8080');
+// socket.on('connected', function(){
+//   console.log("Socket Connected");
+// });
+// socket.on('disconnect', function(){
+//   console.log("Socket Disconnected");
+// });
+// socket.on('data', function (data) {
+//   console.log(data);
+//   //angle = data;
+// });
+
+var socket = io('http://localhost');
+
+ socket.on('news', function (data) {
+   console.log(data);
+   socket.emit('my other event', { my: 'data' });
+ });
+
+
+// function setup(){
+//   // The socket connection needs two event listeners:
+//   socket.onopen = openSocket;
+//   socket.onmessage = showData;
+//   console.log("setup");
+// }
+//
+// function openSocket() {
+//     console.log("Socket open");
+//     socket.send("Hello server");
+//   }
+//
+// function showData(result) {
+//     // when the server returns, show the result in the div:
+//     console.log(result);
+//   //  text.html("Sensor reading:" + result.data);
+//     xPos = int(result.data);        // convert result to an integer
+//     //text.position(xPos, 10);        // position the text
+//   }
+
+
 
 
 var mode = 0;
@@ -84,76 +126,9 @@ var Interface = function(){
   this.score2_h = h/10;
   this.winner = -1;
 
-  ///// for ending
-  this.block_size = 20;
-  this.rect_size = 60;
-  this.frameRate = 60;
-  this.number_of_balls = 15;
-  this.maxballs = 5000;
-  this.balls = [];
-  this.motion = [];
-
-
-  this.addBall = function(_x, _y){
-
-    var ball = {
-      x:  width/2,
-      y: height/2,
-      speed_x: random(-2, 2),
-      speed_y: random(-2, 2),
-      c: rgb(random(255), 0, 0),
-      size: 10
-    }
-
-    this.balls.push(ball);
-    if (this.balls.length > this.maxballs) this.removeBall();
-  }
-
-  this.removeBall = function (){
-    this.balls.splice(0,1);
-    //console.log(balls.length);
-  }
-
-  for (var i = 0; i < this.number_of_balls; i++) {
-    this.addBall();
-  }
-
-  this.update = function (){
-
-    for (var i = 0; i < this.number_of_balls; i++) {
-      this.addBall(w/2, h/2);
-    }
-
-    for (var i = 0; i < this.balls.length; i++) {
-      b = this.balls[i];
-
-      b.x += b.speed_x;
-      b.y += b.speed_y;
-
-      // we adjust the hit area because shere is drawn from the centre
-      if (b.x > width - b.size/2  || b.x < b.size/2  ) {
-        b.speed_x = b.speed_x *-1;
-      }
-
-      if (b.y > height - b.size/2 || b.y < b.size/2 ) {
-        b.speed_y = b.speed_y *-1;
-      }
-
-    } // end for loop
-
-  }
-
-
-  ////////////////
-
   this.draw = function(){
 
     //this.playEnding();
-
-    if (this.game_over == true) {
-      this.playEnding()
-    }
-
 
     this.drawDigit(Math.floor(player1.score/10), this.score1_x - this.score1_w - 10, this.score1_y, this.score1_w, this.score1_h);
     this.drawDigit(player1.score%10, this.score1_x, this.score1_y, this.score1_w, this.score1_h);
@@ -183,31 +158,15 @@ var Interface = function(){
   //   }
   // }
 
-  // this.playEnding = function(){
-  //   var block_size = 5;
-  //   for (var x = 0; x < w; x+=block_size) {
-  //       for (var y = 0; y < h; y+=block_size) {
-  //       ctx.fillStyle = rgb(random(0, 155), 0, 0);
-  //       ctx.fillRect(x, y, block_size, block_size);
-  //     }
-  //   }
-  // }
-
-this.playEnding = function (){
-  console.log("draw");
-  ctx.background(0, 0.05);
-  this.update();
-
-  for (var i = 0; i < this.balls.length; i++) {
-    b = this.balls[i];
-
-    ctx.fillStyle = b.c;
-    ctx.fillRect( b.x,  b.y, b.size, b.size);
-
+  this.playEnding = function(){
+    var block_size = 5;
+    for (var x = 0; x < w; x+=block_size) {
+        for (var y = 0; y < h; y+=block_size) {
+        ctx.fillStyle = rgb(random(0, 155), 0, 0);
+        ctx.fillRect(x, y, block_size, block_size);
+      }
+    }
   }
-
-} // end draw
-
 
   this.gameOver = function(name){
     console.log(name);
@@ -413,6 +372,9 @@ var Ball = function(){
     }
 
   this.draw = function () {
+    //ctx.fillStyle= rgba(0, 0.01);
+    //ctx.fillRect(0,0,w,h)
+    //ctx2.clearRect(0,0,w,h)
     ctx.fillStyle = "red";
     ctx.centreFillRect(this.x, this.y, this.size, this.size);
   }
@@ -456,7 +418,6 @@ function draw(){
 
   wall.draw();
   ui.draw();
-
   if (mode == 1) {
     robot1.update();
     robot2.update();
