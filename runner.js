@@ -8,6 +8,16 @@ connect().use(serveStatic(__dirname)).listen(8080, function(){
 
 // var SerialPort = require('lib/serialport.js');
 var SerialPort = require('serialport');
+
+SerialPort.list(function (err, ports) {
+  ports.forEach(function(port) {
+    console.log(port.comName);
+    console.log(port.pnpId);
+    console.log(port.manufacturer);
+  });
+});
+
+
 // var port = new SerialPort('/dev/tty-usbserial1', { autoOpen: false });
 //var port = new SerialPort('/dev/cu.Bluetooth-Modem', { autoOpen: false });
 var port = new SerialPort('COM3', { autoOpen: false });
