@@ -194,7 +194,7 @@ var Interface = function(){
   // }
 
 this.playEnding = function (){
-  console.log("draw");
+  //console.log("draw");
   ctx.background(0, 0.05);
   this.update();
 
